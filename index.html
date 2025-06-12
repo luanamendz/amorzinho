@@ -94,6 +94,20 @@
         opacity: 0;
       }
     }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 20px;
+      }
+
+      .voucher {
+        font-size: 1.4em;
+      }
+
+      .message {
+        font-size: 1.2em;
+      }
+    }
   </style>
 </head>
 <body>
@@ -118,10 +132,27 @@
 
   <script>
     function copyVoucher() {
-      const code = document.getElementById('voucher').textContent;
-      navigator.clipboard.writeText(code).then(() => {
-        launchConfetti();
-      });
+      const code = document.getElementById('voucher').textContent.trim();
+      
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(code).then(() => {
+          launchConfetti();
+        }).catch(() => {
+          fallbackCopy(code);
+        });
+      } else {
+        fallbackCopy(code);
+      }
+    }
+
+    function fallbackCopy(text) {
+      const tempInput = document.createElement("input");
+      tempInput.value = text;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      document.execCommand("copy");
+      document.body.removeChild(tempInput);
+      launchConfetti();
     }
 
     function launchConfetti() {

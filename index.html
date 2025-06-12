@@ -2,32 +2,45 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Um docinho pra você 🍬</title>
 
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet" />
 
   <style>
-    body {
+    /* Reset e estilo básico */
+    body, html {
       margin: 0;
+      padding: 0;
+      height: 100%;
       font-family: 'Comic Sans MS', cursive, sans-serif;
-      text-align: center;
-      background-color: #7b1e3a;
+      background-color: #7b1e3a; /* vermelho escuro */
       color: #fff;
-      padding: 60px 20px;
-      overflow: hidden;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Canvas confetes fica atrás, full screen */
+    #confettiCanvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
     }
 
     .container {
+      position: relative;
+      z-index: 1;
       background-color: rgba(255, 255, 255, 0.1);
       padding: 30px;
       border-radius: 20px;
       max-width: 400px;
-      margin: 0 auto;
+      margin: 60px auto 40px auto;
       box-shadow: 0 0 25px rgba(0, 0, 0, 0.5);
-      position: relative;
-      z-index: 2;
+      text-align: center;
     }
 
     h1 {
@@ -60,6 +73,7 @@
       font-family: 'Dancing Script', cursive;
       cursor: pointer;
       transition: 0.3s;
+      user-select: none;
     }
 
     .btn:hover {
@@ -75,23 +89,18 @@
     }
 
     .footer {
+      position: relative;
+      z-index: 1;
       margin-top: 30px;
       font-family: 'Dancing Script', cursive;
       font-size: 1.2em;
       color: #fff;
       opacity: 0.8;
     }
-
-    canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      pointer-events: none;
-      z-index: 1;
-    }
   </style>
 </head>
 <body>
+  <!-- Canvas do confete -->
   <canvas id="confettiCanvas"></canvas>
 
   <div class="container">
@@ -116,10 +125,60 @@
   </div>
 
   <script>
+    // Setup do canvas e confetes
+    const canvas = document.getElementById("confettiCanvas");
+    const ctx = canvas.getContext("2d");
+    let width = (canvas.width = window.innerWidth);
+    let height = (canvas.height = window.innerHeight);
+
+    const confetes = [];
+    const emojis = ["❤️", "🍫", "💕", "💝"];
+
+    for (let i = 0; i < 100; i++) {
+      confetes.push({
+        x: Math.random() * width,
+        y: Math.random() * -height,
+        speed: 1 + Math.random() * 3,
+        emoji: emojis[Math.floor(Math.random() * emojis.length)],
+        size: 20 + Math.random() * 10,
+        swing: Math.random() * 2,
+      });
+    }
+
+    function desenharConfete(c) {
+      ctx.font = `${c.size}px serif`;
+      ctx.fillText(c.emoji, c.x, c.y);
+    }
+
+    function animarConfetes() {
+      ctx.clearRect(0, 0, width, height);
+      confetes.forEach((c) => {
+        c.y += c.speed;
+        c.x += Math.sin(c.y * 0.05) * c.swing;
+        if (c.y > height) {
+          c.y = -20;
+          c.x = Math.random() * width;
+        }
+        desenharConfete(c);
+      });
+      requestAnimationFrame(animarConfetes);
+    }
+
+    window.addEventListener("resize", () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    });
+
+    let animando = false;
+
     function mostrarVoucher() {
       document.getElementById("voucher").style.display = "block";
       document.getElementById("mensagem").style.display = "block";
-      iniciarConfetes();
+
+      if (!animando) {
+        animando = true;
+        animarConfetes();
+      }
     }
 
     function copiarCodigo() {
@@ -128,62 +187,6 @@
         alert("Código copiado com sucesso! Agora é só usar 🛍");
       });
     }
-
-    // Confetes ❤️🍫
-    const canvas = document.getElementById("confettiCanvas");
-    const ctx = canvas.getContext("2d");
-
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    const heart = "❤️";
-    const chocoImg = new Image();
-    chocoImg.src = "images/foto.png"; // substitua com seu chocolate pixelado
-
-    let particles = [];
-
-    function random(min, max) {
-      return Math.random() * (max - min) + min;
-    }
-
-    function createParticle() {
-      return {
-        x: random(0, canvas.width),
-        y: -20,
-        size: random(20, 30),
-        speed: random(1, 3),
-        type: Math.random() < 0.5 ? "heart" : "choco"
-      };
-    }
-
-    function iniciarConfetes() {
-      for (let i = 0; i < 100; i++) {
-        particles.push(createParticle());
-      }
-      animateConfetti();
-    }
-
-    function animateConfetti() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particles.forEach((p) => {
-        p.y += p.speed;
-        if (p.type === "heart") {
-          ctx.font = `${p.size}px serif`;
-          ctx.fillText(heart, p.x, p.y);
-        } else {
-          ctx.drawImage(chocoImg, p.x, p.y, p.size, p.size);
-        }
-      });
-      particles = particles.filter(p => p.y < canvas.height + 50);
-      if (particles.length > 0) {
-        requestAnimationFrame(animateConfetti);
-      }
-    }
-
-    window.addEventListener("resize", () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    });
   </script>
 </body>
 </html>

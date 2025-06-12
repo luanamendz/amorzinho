@@ -36,22 +36,6 @@
       color: #fff;
     }
 
-    .fancy-fingers {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      margin: 20px 0;
-      gap: 10px;
-      font-size: 2em;
-      color: white;
-      animation: swirl 3s infinite ease-in-out;
-    }
-
-    @keyframes swirl {
-      0%, 100% { transform: rotate(0deg); }
-      50% { transform: rotate(10deg); }
-    }
-
     .button-wrapper {
       position: relative;
       display: inline-block;
@@ -137,17 +121,6 @@
   <div class="container">
     <h1>Oi, meu docinho 🍭</h1>
 
-    <div class="fancy-fingers">
-      <span style="transform: rotate(0deg)">👉</span>
-      <span style="transform: rotate(45deg)">👉</span>
-      <span style="transform: rotate(90deg)">👉</span>
-      <span style="transform: rotate(135deg)">👉</span>
-      <span style="transform: rotate(180deg)">👉</span>
-      <span style="transform: rotate(225deg)">👉</span>
-      <span style="transform: rotate(270deg)">👉</span>
-      <span style="transform: rotate(315deg)">👉</span>
-    </div>
-
     <div class="button-wrapper">
       <div class="pulse-circle"></div>
       <button onclick="showLove()">Clica aqui 💖</button>
@@ -157,7 +130,7 @@
 
     <div class="message-box" id="loveMessage">
       <h2>Feliz Dia dos Namorados! 💘</h2>
-      <p>Você é o melhor docinho da minha vida 😍</p>
+      <p>Vai lá e compra algo bem gostoso, você merece cada pedacinho 🍩🍰🍫</p>
       <div class="voucher">
         VOUCHER: IF00D-L1ND4-2025
       </div>
@@ -172,15 +145,8 @@
     </div>
   </div>
 
-  <!-- Audio opcional (adicione um som fofo se quiser) -->
-  <!--
-  <audio id="clickSound" src="https://cdn.pixabay.com/audio/2023/03/22/audio_0d020aa775.mp3"></audio>
-  -->
-
   <script>
     function showLove() {
-      // let sound = document.getElementById("clickSound");
-      // sound.play();
       document.getElementById("loveMessage").style.display = "block";
     }
   </script>

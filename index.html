@@ -3,29 +3,28 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Um presente pra você 🍫</title>
+  <title>Um docinho pra você 🍬</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet"/>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet" />
 
   <style>
     body {
       margin: 0;
       font-family: 'Comic Sans MS', cursive, sans-serif;
       text-align: center;
+      background-color: #7b1e3a; /* vermelho escuro */
       color: #fff;
       padding: 60px 20px;
-      background: url('foto.png') no-repeat center center fixed;
-      background-size: cover;
-      overflow: hidden;
     }
 
     .container {
-      background-color: rgba(0, 0, 0, 0.6);
+      background-color: rgba(255, 255, 255, 0.1);
       padding: 30px;
       border-radius: 20px;
       max-width: 400px;
       margin: 0 auto;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.5);
     }
 
     h1 {
@@ -35,14 +34,8 @@
       color: #fff;
     }
 
-    .message {
-      font-family: 'Dancing Script', cursive;
-      font-size: 1.4em;
-      margin-bottom: 30px;
-      line-height: 1.4;
-    }
-
     .voucher {
+      display: none;
       background-color: #fff;
       color: #d81b60;
       padding: 20px;
@@ -50,124 +43,76 @@
       font-family: 'Dancing Script', cursive;
       font-size: 1.8em;
       font-weight: bold;
-      letter-spacing: 2px;
-      user-select: all;
       word-break: break-word;
+      margin-top: 30px;
     }
 
-    .copy-btn {
-      margin-top: 15px;
-      background-color: #d81b60;
-      color: #fff;
+    .btn {
+      padding: 15px 30px;
+      font-size: 1.5em;
       border: none;
-      padding: 12px 24px;
       border-radius: 10px;
-      font-size: 1em;
+      background-color: #fff;
+      color: #7b1e3a;
+      font-family: 'Dancing Script', cursive;
       cursor: pointer;
-      transition: background 0.3s ease;
+      transition: 0.3s;
     }
 
-    .copy-btn:hover {
-      background-color: #b71550;
+    .btn:hover {
+      transform: scale(1.05);
+    }
+
+    .message {
+      display: none;
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.4em;
+      margin-top: 20px;
+      line-height: 1.5;
     }
 
     .footer {
       margin-top: 30px;
       font-family: 'Dancing Script', cursive;
       font-size: 1.2em;
-      opacity: 0.9;
-    }
-
-    .confetti {
-      position: fixed;
-      width: 10px;
-      height: 10px;
-      background: red;
-      clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-      animation: confetti-fall 2s linear forwards;
-      pointer-events: none;
-    }
-
-    @keyframes confetti-fall {
-      to {
-        transform: translateY(100vh) rotate(720deg);
-        opacity: 0;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .container {
-        padding: 20px;
-      }
-
-      .voucher {
-        font-size: 1.4em;
-      }
-
-      .message {
-        font-size: 1.2em;
-      }
+      color: #fff;
+      opacity: 0.8;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Feliz Dia dos Namorados ❤️</h1>
+    <h1>Oi, meu amor 🍫</h1>
 
-    <div class="message">
+    <button class="btn" onclick="mostrarVoucher()">Clique aqui 💖</button>
+
+    <div class="message" id="mensagem">
       Pra adoçar o seu dia, escolha o seu favorito.<br>
-      A TPM não vai vencer 😼🍫❤️
+      A TPM não vai vencer 😼🍫❤
     </div>
 
     <div class="voucher" id="voucher">
-      5XMRN7JH
+      Código Cacau Show: <br>
+      <span id="codigo">5XMRN7JH</span><br>
+      <button class="btn" onclick="copiarCodigo()">Copiar código</button>
     </div>
 
-    <button class="copy-btn" onclick="copyVoucher()">Copiar código & soltar confete</button>
-
     <div class="footer">
-      feito com carinho pelo Batman ❤️
+      Feito com carinho pelo Batman ❤
     </div>
   </div>
 
   <script>
-    function copyVoucher() {
-      const code = document.getElementById('voucher').textContent.trim();
-      
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(code).then(() => {
-          launchConfetti();
-        }).catch(() => {
-          fallbackCopy(code);
-        });
-      } else {
-        fallbackCopy(code);
-      }
+    function mostrarVoucher() {
+      document.getElementById("voucher").style.display = "block";
+      document.getElementById("mensagem").style.display = "block";
     }
 
-    function fallbackCopy(text) {
-      const tempInput = document.createElement("input");
-      tempInput.value = text;
-      document.body.appendChild(tempInput);
-      tempInput.select();
-      document.execCommand("copy");
-      document.body.removeChild(tempInput);
-      launchConfetti();
-    }
-
-    function launchConfetti() {
-      for (let i = 0; i < 80; i++) {
-        const confetti = document.createElement('div');
-        confetti.classList.add('confetti');
-        confetti.style.left = Math.random() * 100 + 'vw';
-        confetti.style.background = '#ff4d6d';
-        confetti.style.animationDuration = (Math.random() * 1 + 1.5) + 's';
-        document.body.appendChild(confetti);
-
-        setTimeout(() => {
-          confetti.remove();
-        }, 2000);
-      }
+    function copiarCodigo() {
+      const codigo = document.getElementById("codigo").innerText;
+      navigator.clipboard.writeText(codigo).then(() => {
+        alert("Código copiado com sucesso! Agora é só usar 🛍");
+      });
     }
   </script>
 </body>

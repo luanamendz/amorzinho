@@ -100,15 +100,9 @@
   <canvas id="confettiCanvas"></canvas>
 
   <script>
-    function showLove() {
-      document.getElementById('loveMessage').classList.remove('hidden');
-      startConfetti();
-    }
-
-    // confete pixelado
     const canvas = document.getElementById('confettiCanvas');
     const ctx = canvas.getContext('2d');
-    let particles = [];
+    let hearts = [];
 
     function resizeCanvas() {
       canvas.width = window.innerWidth;
@@ -118,31 +112,48 @@
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
 
-    function createParticle() {
-      const size = 8;
+    function pixelHeartPattern(size, color) {
+      const s = size;
+      const hearts = [
+        [0,1],[1,0],[2,0],[3,1],
+        [0,2],[1,3],[2,3],[3,2],
+        [1,2],[2,2] // centro
+      ];
+      return { pixels: hearts, size: s, color };
+    }
+
+    function createHeart() {
+      const size = 4 + Math.floor(Math.random() * 4);
       return {
         x: Math.random() * canvas.width,
-        y: -size,
-        size,
-        speedY: Math.random() * 3 + 2,
-        color: `hsl(${Math.random() * 360}, 70%, 60%)`
+        y: -10,
+        speedY: 1 + Math.random() * 2,
+        pattern: pixelHeartPattern(size, `hsl(${Math.random() * 360}, 70%, 60%)`)
       };
     }
 
-    function startConfetti() {
-      particles = [];
-      for (let i = 0; i < 200; i++) {
-        particles.push(createParticle());
+    function drawHeart(h) {
+      const { pixels, size, color } = h.pattern;
+      ctx.fillStyle = color;
+      pixels.forEach(([dx, dy]) => {
+        ctx.fillRect(h.x + dx * size, h.y + dy * size, size, size);
+      });
+    }
+
+    function showLove() {
+      document.getElementById('loveMessage').classList.remove('hidden');
+      hearts = [];
+      for (let i = 0; i < 150; i++) {
+        hearts.push(createHeart());
       }
       requestAnimationFrame(update);
     }
 
     function update() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      for (let p of particles) {
-        ctx.fillStyle = p.color;
-        ctx.fillRect(p.x, p.y, p.size, p.size);
-        p.y += p.speedY;
+      for (let h of hearts) {
+        drawHeart(h);
+        h.y += h.speedY;
       }
       requestAnimationFrame(update);
     }
